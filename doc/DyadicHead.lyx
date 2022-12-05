@@ -1,0 +1,733 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+% force pdfs to use scalable fonts
+\usepackage[T1]{fontenc}
+\usepackage{ae,aecompl}
+
+%% format URLs nicely
+\usepackage{url}
+
+%% Allow IPA characters
+\usepackage[safe]{tipa}
+
+%% handle SVN: must enable corresponding keywords for this file in SVN client
+% use \SVNRevision and \SVNDate in main text
+\usepackage{svn}
+\SVN $Revision$
+\SVN $Date$
+
+%% Uncomment the line below to add a "DRAFT" watermark
+%\usepackage{draftwatermark}
+
+%% Hijack the nomenclature button in Lyx to do acronyms instead
+%% Include "withpage" option to include page numbers in acronym list
+\usepackage[printonlyused,withpage]{acronym}
+%% Insert "\acronymlist{file]" or  where you want the list  "\acronymnolist{file]"
+\newcommand{\acronymlist}[1]{
+\begin{acronym}[MMMMMMM]\input{#1}\end{acronym}}
+\newcommand{\acronymnolist}[1]{
+\newcommand{\acro}{\acrodef}\input{#1}}
+%% Use nomenclature button to insert an acronym reference
+\usepackage{ifthen}
+\providecommand{\nomenclature}{}
+\renewcommand{\nomenclature}[2]{\ifthenelse{\equal{#2}{f}}{\acf{#1}}{\ifthenelse{\equal{#2}{s}}{\acs{#1}}{\ifthenelse{\equal{#2}{l}}{\acl{#1}}{\ifthenelse{\equal{#2}{p}}{\acp{#1}}{\ac{#1}}}}}}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language british
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures false
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\headheight 2cm
+\headsep 2cm
+\footskip 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+DyadicHead database
+\end_layout
+
+\begin_layout Author
+Mike Brookes
+\end_layout
+
+\begin_layout Standard
+This document discusses the dataset that is described in
+\end_layout
+
+\begin_layout Description
+[1] L.
+ V.
+ Hadley, W.
+ O.
+ Brimijoin, and W.
+ M.
+ Whitmer.
+ Speech, movement, and gaze behaviours during dyadic conversation in noise.
+ Scientific Reports, 9 (1), jul 2019.
+ doi: 10.1038/s41598-019-46416-0
+\end_layout
+
+\begin_layout Standard
+which tracks head and eye movements during dyadic conversations.
+ 
+\end_layout
+
+\begin_layout Section
+Format of database
+\end_layout
+
+\begin_layout Standard
+Each of 15 talker pairs (dyads) recorded 3 conversations and data from each
+ conversation is saved in a file whose name has the form 
+\begin_inset Quotes eld
+\end_inset
+
+dyad01conv1.dyh
+\begin_inset Quotes erd
+\end_inset
+
+.
+ There are a total of only 44 files because conversation 3 from dyad 2 did
+ not record properly and is omitted.
+ The .dyh file consists of 21N+13 little-endian 16-bit integers where N is
+ the number of frames.
+ The 13-value header consists of the characters 'DyadicHead' followed by
+ the File-version, Dyad and Conversation numbers.
+ Of the 38 fields in the output of readdyh.m (see below), only the first
+ 21 are saved explicitly in the database, the remaining 17 fields are calculated
+ when the file is read.
+\end_layout
+
+\begin_layout Section
+MATLAB routines
+\end_layout
+
+\begin_layout Standard
+The following MATLAB routines are available
+\end_layout
+
+\begin_layout Description
+readdyh This function reads the files from the database and calculates additiona
+l useful quantities
+\end_layout
+
+\begin_layout Description
+printdyad This function allows the user to select a conversation and frame
+ and prints out the values of all the variables
+\end_layout
+
+\begin_layout Description
+plotdyad This function allows the user to select a conversation and plot
+ one or more variables versus time over a chosen range of samples
+\end_layout
+
+\begin_layout Description
+writedyh This function was used to read the raw text files available in
+ [1] as supplementary informationand writes out binary files in a format
+ that is more convenient to access
+\end_layout
+
+\begin_layout Section
+Experimental Setup and Coordinate System
+\end_layout
+
+\begin_layout Standard
+The setup is shown in Fig.
+ 1 of [1] and consists of two seated talkers facing each other at a distance
+ of 1.5 m; a ring of eight loudspeakers provided speech-shaped background
+ noise.
+ From the viewpoint of talker-1, the positive x axis is to the right, y
+ ahead and z upwards; the coordinate % origin is on the floor midway between
+ the talkers.
+ Head and gaze rotations are performed in the order yaw, pitch, roll using
+ intrinsic coordinates that rotate with the head.
+ A positive yaw turns to the right, a positive pitch tilts downwards and
+ a positive roll tilts to the left.
+ 
+\end_layout
+
+\begin_layout Section
+Speech and Noise
+\end_layout
+
+\begin_layout Standard
+The plots below show data from the file dyad1conv1.dyh; this conversation
+ lasts 10.44 minutes and contains 62625 samples @ 100
+\begin_inset space ~
+\end_inset
+
+Hz sampling rate.
+ The title of each plot gives the file name followed by the field number
+ (in the range 1 to 38); fields 1 to 21 are extracted directly from the
+ file while fields 22 to 38 are calculated from these values when the file
+ is read.
+ For some fields, some of the values are invalid (given as NaN in the files);
+ the number of such values is indicated on the plot when it is non-zero.
+ The mean 
+\begin_inset Formula $\pm$
+\end_inset
+
+standard deviation of the valid values are indicated by horizontal lines
+ with numerical values given in the lower left corner.
+ In most cases, the first row of each set of plots corresponds to talker-1
+ and the second row to talker-2.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-2.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-3.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-1.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-12.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-13.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-24.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The first column shows the of each talker during speech; the upper and lower
+ rows are talker-1 and talker-2 respectively.
+ I assume that the units are dB SPL at the other speaker because this is
+ the most relevant thing to measure.
+ The second column and an indication of when they are talking (58% and 44%
+ of the time respectively).
+ The upper right plot shows the noise level over time (again presumably
+ in dB SPL).
+ There is an anomalous interval near the beginning where the level drops
+ to 2.5
+\begin_inset space ~
+\end_inset
+
+dB.
+ The lower right plot is the change in noise level; non-zero values indicate
+ the start of a new noise segment.
+\end_layout
+
+\begin_layout Section
+Head displacement
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-4.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-5.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-6.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-14.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-15.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-16.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-25.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These plots show the (x,y,z) positions of talker-1 (top row) and talker-2
+ (middle row) as well as the distance between the two talkers.
+ The centre of the head is defined as 
+\begin_inset Quotes eld
+\end_inset
+
+between the ears in line with the bridge of the nose
+\begin_inset Quotes erd
+\end_inset
+
+ [1, page 6, line 9].
+\end_layout
+
+\begin_layout Section
+Head Orientation
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-7.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-8.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-9.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-17.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-18.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-19.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These plots show the head orientation using Tait-Bryan angles (yaw,pitch,roll)
+ in degrees..
+ I assume that the rotation order is (yaw,pitch,roll) and that these are
+ intrinsic rotations (i.e.
+ they are relative to axes that move with the head).
+ It appears that, looking along ae positive axis, a positive rotation is
+ anti-clockwise.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-29.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-30.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-31.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-32.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-35.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-36.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The top row shows how much must be added to the yaw and pitch to make the
+ head rotation of talker-1 be relative to the centre of the talker-2's head
+ rather than to the y-axis (the sign of the pitch offset is reversed for
+ talker-2).
+ The next two rows show the resultant relative head rotation for talker-1
+ and talker-2 respectively.
+\end_layout
+
+\begin_layout Section
+Eye Tracker and Gaze
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-10.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-11.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-20.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-21.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These plots show the output of the eye tracker for talker-1 (upper plots)
+ and talker-2 (lower plots).
+ Apart from offsets of around 
+\begin_inset Formula $4^{\circ}$
+\end_inset
+
+and 
+\begin_inset Formula $1^{\circ}$
+\end_inset
+
+ in 
+\begin_inset Formula $\phi$
+\end_inset
+
+ and 
+\begin_inset Formula $\theta$
+\end_inset
+
+ respectively, the plots for the two speakers look almost identical; this
+ is unbelievable and so I presume there is an error in the data somehow.
+ In addition, both files contain many invalid values in the regions near
+ 100
+\begin_inset space ~
+\end_inset
+
+s and 168
+\begin_inset space ~
+\end_inset
+
+s where the large spikes occur in the graphs.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-33.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-34.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig/dyad01conv1-37.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig/dyad01conv1-38.emf
+	lyxscale 30
+	width 32text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is possible to add the eye-tracker information to the relative head orientati
+on to find the gaze direction relative to the other talker.
+ These plots suffer the same believability issues as the previous ones.
+ The pitch gaze is dominated by head rotation since the eye movement is
+ very small.
+ The gaze values in [1, page 4, Figure 4b] use the ear tragi as the reference
+ height according to [1, page 3, line 10] rather than the head centre defined
+ earlier.
+ It is unclear how the offset between the head centre and the tragi was
+ calculated.
+\end_layout
+
+\begin_layout Section
+Issues
+\end_layout
+
+\begin_layout Standard
+Here I summarize the issues and uncertainties in the data.
+ Most of these have already been mentioned above.
+\end_layout
+
+\begin_layout Enumerate
+The coordinate system, rotation polarities and rotation order are not precisely
+ defined.
+\end_layout
+
+\begin_layout Enumerate
+The point at which the speech and noise levels are measured is not clearly
+ defined.
+\end_layout
+
+\begin_layout Enumerate
+The eye tracker values are suspiciously identical for talker 1 and talker
+ 2 (data indices 10/11 and 20/21) and contain some invalid values.
+ I think this must be an error.
+\end_layout
+
+\begin_layout Enumerate
+The head displacements define the centre of the head as 
+\begin_inset Quotes eld
+\end_inset
+
+between the ears in line with the bridge of the nose
+\begin_inset Quotes erd
+\end_inset
+
+ [1, page 6, line 9] whereas the relative gaze is calculated with respect
+ to the tragi.
+ I don't know how they mapped between these two and whether they measured
+ a different vertical offset for each test subject.
+\end_layout
+
+\begin_layout Enumerate
+The noise dips to 2.5 dB between 5.89 and 8.14 seconds.
+ This contradicts the statement in [1, page 5, penultimate line] that the
+ noise levels were taken from 
+\begin_inset Formula $\{54,\,60,\,66,\,72,z,78\}\,\mathrm{dB}$
+\end_inset
+
+.
+ I presume this is an error.
+\end_layout
+
+\end_body
+\end_document
